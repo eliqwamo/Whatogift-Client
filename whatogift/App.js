@@ -1,12 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { TabsNavigator } from './src/navigation';
+import { TabsNavigator, AccountStack } from './src/navigation';
 
 export default function App() {
+
+  const [isLogin, setIsLogin] = useState(false);
+
   return (
     <NavigationContainer>
-      <TabsNavigator />
+      {
+        isLogin ? (<TabsNavigator />) : (<AccountStack />)
+      }
     </NavigationContainer>
   );
 }
