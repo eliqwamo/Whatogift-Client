@@ -1,12 +1,53 @@
-import react, {useState} from "react";
-import {View,Text} from 'react-native';
+import react, {useState, useEffect} from "react";
+import {View,Text, ActivityIndicator, Alert} from 'react-native';
 import Style from '../../utilis/AppStyle';
 import {TextInput, Button } from 'react-native-paper';
+import Colors from '../../utilis/AppColors.js'
 
 const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState(null);
+
+    useEffect(() => {
+        if(errorMsg){
+            Alert.alert('Login', errorMsg);
+        }
+    },[errorMsg])
+
+    const login = async() => {
+        setIsLoading(true);
+        if(email != "" && password != ""){
+            try {
+                const url = 'http://10.100.8.1:3001/api/account/login';
+                const response = await fetch(url, {
+                    method: 'post',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                })
+
+                const data = await response.json();
+                if(data.status){
+                    setIsLoading(false);
+                    setErrorMsg(data.token);
+                } else {
+                    setIsLoading(false);
+                    setErrorMsg(data.message);
+                }
+            } catch (error) {
+                setIsLoading(false);
+                setErrorMsg(error.message);
+            }
+        } else {
+            setIsLoading(false);
+            setErrorMsg('All inputs required');
+        }
+    }
 
     return(
         <View style={Style.container}>
@@ -30,7 +71,10 @@ const Login = () => {
                 right={<TextInput.Icon icon="eye" />}
             />
 
-            <Button icon="send" mode="contained" onPress={() => console.log('Pressed')}>LOGIN</Button>
+            {
+                isLoading ? (<ActivityIndicator color={Colors.ocean} size="large" />) 
+                : (<Button icon="send" mode="contained" onPress={login}>LOGIN</Button>)
+            }
 
             
 
