@@ -2,7 +2,8 @@ import react, {useState, useEffect} from "react";
 import {View,Text, ActivityIndicator, Alert} from 'react-native';
 import Style from '../../utilis/AppStyle';
 import {TextInput, Button } from 'react-native-paper';
-import Colors from '../../utilis/AppColors.js'
+import Colors from '../../utilis/AppColors.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
 
@@ -21,7 +22,7 @@ const Login = () => {
         setIsLoading(true);
         if(email != "" && password != ""){
             try {
-                const url = 'http://10.100.8.1:3001/api/account/login';
+                const url = 'http://10.100.6.1:3001/api/account/login';
                 const response = await fetch(url, {
                     method: 'post',
                     headers: {'Content-Type': 'application/json'},
@@ -33,8 +34,25 @@ const Login = () => {
 
                 const data = await response.json();
                 if(data.status){
+
+                    AsyncStorage.setItem('Token', JSON.stringify({
+                       token: data.token 
+                    }))
+
+                    // const overview_url = 'http://10.100.6.1:3001/api/account/getOverview';
+                    // const overview_response = await fetch(overview_url, {
+                    //     method: 'get',
+                    //     headers: {
+                    //         'Content-Type' : 'application/json',
+                    //         'Authorization' : `Bearer ${data.token}`
+                    //     }
+                    // });
+                    // const overview_data = await overview_response.json();
+                    // setErrorMsg(overview_data.message);
                     setIsLoading(false);
-                    setErrorMsg(data.token);
+
+
+
                 } else {
                     setIsLoading(false);
                     setErrorMsg(data.message);
