@@ -5,5 +5,6 @@ export default {
     ocean: '#489FB5',
     dark_blue: '#16697A',
     white: '#ffffff',
-    black: '#000000'
+    black: '#000000',
+    pink: '#E54F6D'
 }
