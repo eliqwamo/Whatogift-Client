@@ -25,11 +25,12 @@ export const find_gift = (
     return async dispatch => {
         try {
             const url = 'http://10.100.6.1:3001/api/product/get_all_products';
+            console.log(`Bearer ${token}`)
             const request = await fetch(url, {
                 method: 'post',
                 headers: {
                     'Content-Type' : 'application/json',
-                    'Authorization' : `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     latitude: location.coords.latitude,
@@ -43,7 +44,9 @@ export const find_gift = (
                     related: related
                 })
             })
+            console.log('sending request to the server')
             const data = await request.json();
+            console.log(data)
             if(data.status){
                 dispatch(find_gift_dispatch(data))
             } else {
