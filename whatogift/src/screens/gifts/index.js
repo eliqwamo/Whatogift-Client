@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, LogBox } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, Alert, TouchableOpacity, StyleSheet, ScrollView, LogBox } from 'react-native';
 import Style from '../../utilis/AppStyle';
 import { Slider } from '@miblanchard/react-native-slider';
 import { AutocompleteTags } from 'react-native-autocomplete-tags'
 import RadioButtonRN from 'radio-buttons-react-native';
 import { TextInput } from 'react-native-paper';
+import * as actions from '../../../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
+
 
 const relationsArr = [
     "First Circle: Mom & Dad & Siblings",
@@ -42,21 +47,63 @@ const Gift = (props) => {
     const [age, setAge] = useState(0);
     const [locationRadius, setLocationRadius] = useState([30, 60]);
     const [related, setRelated] = useState(1);
+    const [token, setToken] = useState('');
+    const [location, setLocation] = useState(null);
+    const dispatch = useDispatch();
+
 
     useEffect(() => {
         LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
     }, [])
 
 
-    const find_gift_action = () => {
-        console.log(eventTags);
-        console.log(gender);
-        console.log(budget);
-        console.log(interstsTags);
-        console.log(age);
-        console.log(locationRadius);
-        console.log(related);
-    }
+
+    const getDataFromAsync = useCallback(async ()=> {
+        const dataFromAsync = await AsyncStorage.getItem('Account');
+        if(dataFromAsync != null){
+            const data = JSON.parse(dataFromAsync);
+            setToken(data.token);
+        }
+    },[setToken])
+
+    useEffect(() => {
+        getDataFromAsync();
+    },[getDataFromAsync])
+
+    useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location);
+        })();
+      }, []);
+
+
+console.log('TOKEN: ' + token);
+
+
+    const find_gift_action = useCallback(async => {
+        try {
+            if (token && location) {
+                const action = actions.find_gift(
+                    token,location,
+                    eventTags, gender, budget,
+                    interstsTags, age, locationRadius,
+                    related
+                );
+                dispatch(action);
+            } else {
+                Alert.alert('Find my gift', 'Missing token or location');
+            }
+        } catch (error) {
+            Alert.alert('Find my gift', error.message);
+        }
+    })
+
 
 
     return (

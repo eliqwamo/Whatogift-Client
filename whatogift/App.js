@@ -10,7 +10,8 @@ import { useSelector } from 'react-redux';
 
 import reducers from './store/reducers';
 const rootReducer = combineReducers({
-  appReducer: reducers
+  appReducer: reducers,
+  giftsList: reducers
 })
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

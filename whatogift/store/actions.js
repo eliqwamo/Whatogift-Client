@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const GET_OVERVIEW = 'GET_OVERVIEW';
+export const GET_GIFTS = 'GET_GIFTS';
 
 export const logout = () => {
     AsyncStorage.removeItem('Account');
@@ -11,6 +12,52 @@ export const logout = () => {
 export const loginDispatch = (data) => {
     return dispatch => {
         dispatch({ type: LOGIN, data: data })
+    }
+}
+
+
+
+export const find_gift = (
+    token, location, eventTags,
+    gender, budget, interstsTags,
+    age, locationRadius, related
+) => {
+    return async dispatch => {
+        try {
+            const url = 'http://10.100.6.1:3001/api/product/get_all_products';
+            const request = await fetch(url, {
+                method: 'post',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                    eventTags: eventTags,
+                    gender: gender,
+                    budget: budget,
+                    interstsTags: interstsTags,
+                    age: age,
+                    locationRadius: locationRadius,
+                    related: related
+                })
+            })
+            const data = await request.json();
+            if(data.status){
+                dispatch(find_gift_dispatch(data))
+            } else {
+                console.log('No data for you');
+            }
+        } catch (error) {
+            console.log('ERRRRRR: ' + JSON.stringify(error));
+        }
+    }
+}
+
+export const find_gift_dispatch = (data) => {
+    return dispatch => {
+        dispatch({ type: GET_GIFTS, data: data })
     }
 }
 

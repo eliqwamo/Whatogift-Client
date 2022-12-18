@@ -1,4 +1,4 @@
-import { LOGIN, GET_OVERVIEW } from './actions';
+import { LOGIN, GET_OVERVIEW, GET_GIFTS } from './actions';
 
 const initialState = {
 
@@ -11,6 +11,11 @@ export default (state = initialState, action) => {
                 ...state,
                 appReducer: action.data,
                 token: action.data.token
+            }
+        case GET_GIFTS:
+            return {
+                ...state,
+                giftsList: action.data
             }
         case GET_OVERVIEW:
             return {
