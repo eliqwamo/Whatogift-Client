@@ -24,7 +24,7 @@ export const find_gift = (
 ) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.6.1:3001/api/product/get_all_products';
+            const url = 'http://10.100.5.1:3001/api/product/get_all_products';
             console.log(`Bearer ${token}`)
             const request = await fetch(url, {
                 method: 'post',
@@ -73,7 +73,7 @@ export const getOverviewDispatch = (data) => {
 export const getOverview = (token, location) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.6.1:3001/api/company/get_companies_by_location';
+            const url = 'http://10.100.5.1:3001/api/company/get_companies_by_location';
             const request = await fetch(url, {
                 method: 'post',
                 headers: {
@@ -104,7 +104,7 @@ export const getOverview = (token, location) => {
 export const login = (email,password) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.6.1:3001/api/account/login';
+            const url = 'http://10.100.5.1:3001/api/account/login';
             const request = await fetch(url, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
