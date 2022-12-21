@@ -8,6 +8,8 @@ import ReduxThunk from 'redux-thunk';
 import { combineReducers, applyMiddleware, createStore } from 'redux';
 import { useSelector } from 'react-redux';
 
+import firebase from './src/utilis/firebaseConfig';
+
 import reducers from './store/reducers';
 const rootReducer = combineReducers({
   appReducer: reducers,
@@ -33,15 +35,21 @@ export default function App() {
     getDataFromAsync();
   }, [getDataFromAsync])
 
-  console.log(token);
 
+
+  const [isAuth, setIsAuth] = useState(false);
+  if (firebase.apps.length) {
+    firebase.auth().onAuthStateChanged((user) => {
+      setIsAuth(!!user)
+    })
+  }
 
 
   return (
     <Provider store={store}>
       <NavigationContainer>
         {
-          isLogin ? (<TabsNavigator />) : (<AccountStack />)
+          isAuth ? (<TabsNavigator />) : (<AccountStack />)
         }
       </NavigationContainer>
     </Provider>
