@@ -7,9 +7,12 @@ import Colors from '../../utilis/AppColors';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../../store/actions';
 import * as Location from 'expo-location';
+import firebase from '../../utilis/firebaseConfig';
 
 
 const Dashboard = (props) => {
+
+    const user = firebase.auth().currentUser;
 
     const dispatch = useDispatch();
     const [token, setToken] = useState('');
@@ -56,8 +59,8 @@ const Dashboard = (props) => {
       }, []);
     return(
         <View style={Style.container}>
-            <Text>Dashboard</Text>
-            <Button onPress={() => {dispatch(actions.logout())}} title='Logout' />
+            <Text>{user.email}</Text>
+            <Button onPress={() => {firebase.auth().signOut()}} title='Logout' />
         </View>
     )
 }

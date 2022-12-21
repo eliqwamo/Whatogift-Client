@@ -32,6 +32,7 @@ const Login = () => {
             //const action = actions.login(email,password);
             try {
                 //dispatch(action);
+                const user = await firebase.auth().signInWithEmailAndPassword(email,password);
                 setIsLoading(false);
             } catch (error) {
                 
@@ -42,6 +43,7 @@ const Login = () => {
         }
     }
     const signup = async() => {
+        setErrorMsg(null);
         setIsLoading(true);
         if(email != '' && password != ''){
 
@@ -51,7 +53,8 @@ const Login = () => {
                 //dispatch(action);
                 setIsLoading(false);
             } catch (error) {
-                
+                setErrorMsg(error.message);
+                setIsLoading(false);
             }
         } else {
             setIsLoading(false);
