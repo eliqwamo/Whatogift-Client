@@ -15,6 +15,10 @@ const Login = () => {
     const [loginView, setLoginView] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
     const dispatch = useDispatch();
@@ -29,9 +33,9 @@ const Login = () => {
     const login = async() => {
         setIsLoading(true);
         if(email != '' && password != ''){
-            //const action = actions.login(email,password);
             try {
-                //dispatch(action);
+                const action = actions.login(email,password);
+                dispatch(action);
                 const user = await firebase.auth().signInWithEmailAndPassword(email,password);
                 setIsLoading(false);
             } catch (error) {
@@ -42,15 +46,17 @@ const Login = () => {
             setErrorMsg('Email and password are required');
         }
     }
+
+
+
     const signup = async() => {
         setErrorMsg(null);
         setIsLoading(true);
-        if(email != '' && password != ''){
-
-            //const action = actions.login(email,password);
+        if(email != '' && password != '' && firstName != '' && lastName != ''){
             try {
                 const user = await firebase.auth().createUserWithEmailAndPassword(email,password);
-                //dispatch(action);
+                const action = actions.signup(email,password,firstName, lastName, user.user.uid);
+                dispatch(action);
                 setIsLoading(false);
             } catch (error) {
                 setErrorMsg(error.message);
@@ -61,6 +67,8 @@ const Login = () => {
             setErrorMsg('Email and password are required');
         }
     }
+
+
 
 
     // const login = async() => {
@@ -78,6 +86,8 @@ const Login = () => {
     //         setErrorMsg('Email and password are required');
     //     }
     // }
+
+
 
 
     return(
@@ -112,8 +122,31 @@ const Login = () => {
                             </TouchableOpacity>
                 </View>
             ) : (
-                <View>
+
+
+
+
+
+            <View>
             <Text style={{fontSize:24, fontWeight:'700', marginBottom:30}}>Signup</Text>
+           
+
+            <TextInput
+                value={firstName} onChangeText={text => {setFirstName(text)}}
+                label="First name"
+                keyboardType="default"
+                right={<TextInput.Icon icon="account" />}
+            />
+
+
+            <TextInput
+                value={lastName} onChangeText={text => {setLastName(text)}}
+                label="Last name"
+                keyboardType="default"
+                right={<TextInput.Icon icon="account" />}
+            />
+
+           
             <TextInput
                 value={email} onChangeText={text => {setEmail(text)}}
                 label="Email"

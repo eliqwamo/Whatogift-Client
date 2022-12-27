@@ -101,6 +101,51 @@ export const getOverview = (token, location) => {
 }
 
 
+
+
+export const signup = (email,password,firstName,lastName,uid) => {
+    return async dispatch => {
+        try {
+            const url = 'http://10.100.5.1:3001/api/account/signup';
+            const request = await fetch(url, {
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    uid: uid
+                })
+            })
+            const data = await request.json();
+            if(data.status){
+                AsyncStorage.setItem('Account', JSON.stringify({
+                    token: data.token,
+                    _id: data.message._id,
+                    firstName: data.message.firstName,
+                    lastName: data.message.lastName,
+                    email: data.message.email,
+                    avatar: data.message.avatar
+                }));
+                dispatch(loginDispatch(data.message))
+            } else {
+                let message = data.message;
+                throw new Error(message);
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+}
+
+
+
+
+
+
+
+
 export const login = (email,password) => {
     return async dispatch => {
         try {
