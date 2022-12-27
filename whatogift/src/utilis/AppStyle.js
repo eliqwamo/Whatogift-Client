@@ -12,7 +12,7 @@ export default StyleSheet.create({
         paddingVertical:15,
         borderRadius:12,
         backgroundColor: Colors.pink,
-        marginTop:20
+        marginTop:20, marginBottom:20
     },
     btn_white_text:{
         fontWeight:'700',

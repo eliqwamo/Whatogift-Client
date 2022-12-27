@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Alert, TouchableOpacity, StyleSheet, ScrollView, LogBox } from 'react-native';
+import { View, Text, Alert, Modal, FlatList, TouchableOpacity, StyleSheet, ScrollView, LogBox } from 'react-native';
 import Style from '../../utilis/AppStyle';
 import { Slider } from '@miblanchard/react-native-slider';
 import { AutocompleteTags } from 'react-native-autocomplete-tags'
@@ -9,6 +9,9 @@ import * as actions from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Colors from '../../utilis/AppColors';
+import GiftItem from './GiftItem';
 
 
 const relationsArr = [
@@ -50,9 +53,18 @@ const Gift = (props) => {
     const [token, setToken] = useState('');
     const [location, setLocation] = useState(null);
     const dispatch = useDispatch();
+    const [modalVisible, setModalVisible] = useState(false);
+
+
 
 
     useEffect(() => {
+        props.navigation.setOptions({
+            headerTitle: "Find My Gift",
+            headerRight: () => (
+                <MaterialCommunityIcons onPress={() => {setModalVisible(!modalVisible)}} name='filter' color={Colors.white} size={28} />
+            )
+        })
         LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
     }, [])
 
@@ -83,10 +95,9 @@ const Gift = (props) => {
       }, []);
 
 
-console.log('TOKEN: ' + token);
-
 
     const find_gift_action = useCallback(async => {
+        setModalVisible(false);
         try {
             if (token && location) {
                 const action = actions.find_gift(
@@ -106,14 +117,33 @@ console.log('TOKEN: ' + token);
 
 
 
+
+    const giftData = useSelector((state) => state.giftsList);
+    console.log('MY GIFTS: ' + JSON.stringify(giftData));
+
+
     return (
-        <ScrollView nestedScrollEnabled={true}>
+
             <View style={Style.container}>
-                <Text style={{ fontSize: 25, height: 50 }}>Relation:</Text>
-                <View style={{ height: 60, borderTopWidth: 2, borderBottomWidth: 2 }}>
-                    <Text style={{ fontSize: 20, textAlign: 'center' }}>{related} :
+
+
+                <Modal 
+                    transparent={true}
+                    onRequestClose={find_gift_action}
+                    visible={modalVisible}
+                    animationType='slide'>
+
+                        <View style={{width:'100%', height:'100%', backgroundColor:'#000', alignItems:'center', justifyContent:'center'}}>
+                            <ScrollView style={{width:'90%', padding:20, height:'90%', backgroundColor:'#ffffff', borderRadius:30}}>
+
+
+
+
+                <Text style={{ fontSize: 14 }}>Relation:</Text>
+                <View style={{ borderTopWidth: 2, borderBottomWidth: 1 }}>
+                    <Text style={{ fontSize: 14, textAlign: 'center' }}>{related} :
                         {
-                            <Text style={{ fontSize: 20, textAlign: 'center' }}> {relationsArr[related - 1]}</Text>
+                            <Text style={{ fontSize: 14, textAlign: 'center' }}> {relationsArr[related - 1]}</Text>
                         }
                     </Text>
                 </View>
@@ -126,7 +156,7 @@ console.log('TOKEN: ' + token);
                 />
 
 
-                <Text style={{ fontSize: 25, padding: 10 }}>Enter an Event:</Text>
+                <Text style={{ fontSize: 14, padding: 10 }}>Enter an Event:</Text>
                 <View style={[styles.rowContainer]}>
                     <AutocompleteTags
                         tags={eventTags}
@@ -155,7 +185,7 @@ console.log('TOKEN: ' + token);
                 </View>
 
 
-                <Text style={{ fontSize: 25, padding: 10 }}>Enter an Interests:</Text>
+                <Text style={{ fontSize: 14, padding: 10 }}>Enter an Interests:</Text>
                 <View style={[styles.rowContainer]}>
                     <AutocompleteTags
                         tags={interstsTags}
@@ -185,14 +215,14 @@ console.log('TOKEN: ' + token);
                 </View>
 
 
-                <Text style={{ fontSize: 25, padding: 10 }}>Gender:</Text>
+                <Text style={{ fontSize: 14, padding: 10 }}>Gender:</Text>
                 <RadioButtonRN
                     data={genderRbData}
                     selectedBtn={(gender) => setGender(gender)}
                 />
 
 
-                <Text style={{ fontSize: 25, padding: 10 }}>Age:</Text>
+                <Text style={{ fontSize: 14, padding: 10 }}>Age:</Text>
                 <TextInput
                     value={age} onChangeText={age => { setAge(age) }}
                     label="Age"
@@ -203,10 +233,10 @@ console.log('TOKEN: ' + token);
                 />
 
 
-                <Text style={{ fontSize: 25, height: 50 }}>Location:</Text>
+                <Text style={{ fontSize: 14, height: 50 }}>Location:</Text>
                 <View style={{ height: 60, borderTopWidth: 2, borderBottomWidth: 2, justifyContent: 'center' }}>
 
-                    <Text style={{ fontSize: 20, textAlign: 'center' }}>Min Location: {locationRadius[0]} km{'\n'}Max Location: {locationRadius[1]} km</Text>
+                    <Text style={{ fontSize: 14, textAlign: 'center' }}>Min Location: {locationRadius[0]} km{'\n'}Max Location: {locationRadius[1]} km</Text>
 
                 </View>
                 <Slider
@@ -218,10 +248,10 @@ console.log('TOKEN: ' + token);
                 />
 
 
-                <Text style={{ fontSize: 25, height: 50 }}>Budget:</Text>
+                <Text style={{ fontSize: 14, height: 50 }}>Budget:</Text>
                 <View style={{ height: 60, borderTopWidth: 2, borderBottomWidth: 2, justifyContent: 'center' }}>
 
-                    <Text style={{ fontSize: 20, textAlign: 'center' }}>Min: {budget[0]}${'\n'}Max: {budget[1]}$</Text>
+                    <Text style={{ fontSize: 14, textAlign: 'center' }}>Min: {budget[0]}${'\n'}Max: {budget[1]}$</Text>
 
                 </View>
                 <Slider
@@ -229,22 +259,32 @@ console.log('TOKEN: ' + token);
                     step={200}
                     maximumValue={3000}
                     minimumValue={100}
-                    onValueChange={value => setBudget([value[0], value[1]])}
-                />
-
+                    onValueChange={value => setBudget([value[0], value[1]])}/>
 
                 <TouchableOpacity onPress={find_gift_action} style={Style.btn_container}>
                     <Text style={Style.btn_white_text}>FIND MY GIFT</Text>
                 </TouchableOpacity>
 
+                            </ScrollView>
+                        </View>
+
+                </Modal>
+
+                {
+                    giftData ? (
+                        <FlatList
+                            data={giftData.giftsList.message}
+                            keyExtractor={item => item._id}
+                            renderItem={rowItem => <GiftItem gift={rowItem.item} />}
+                        />
+                    ) : (
+                        <Text>No gifts for you</Text>
+                    )
+                }
+
+                
             </View>
 
-
-
-
-
-
-        </ScrollView>
     );
 }
 

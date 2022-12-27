@@ -15,7 +15,9 @@ export const loginDispatch = (data) => {
     }
 }
 
-
+// ip address to replace.
+const PORT = 3001;
+const IP_ADDRESS = `10.100.5.1:${PORT}`;
 
 export const find_gift = (
     token, location, eventTags,
@@ -24,8 +26,7 @@ export const find_gift = (
 ) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.5.1:3001/api/product/get_all_products';
-            console.log(`Bearer ${token}`)
+            const url = `http://${IP_ADDRESS}/api/product/get_all_products`;
             const request = await fetch(url, {
                 method: 'post',
                 headers: {
@@ -44,9 +45,7 @@ export const find_gift = (
                     related: related
                 })
             })
-            console.log('sending request to the server')
             const data = await request.json();
-            console.log(data)
             if(data.status){
                 dispatch(find_gift_dispatch(data))
             } else {
@@ -73,7 +72,7 @@ export const getOverviewDispatch = (data) => {
 export const getOverview = (token, location) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.5.1:3001/api/company/get_companies_by_location';
+            const url = `http://${IP_ADDRESS}}/api/company/get_companies_by_location`;
             const request = await fetch(url, {
                 method: 'post',
                 headers: {
@@ -106,7 +105,7 @@ export const getOverview = (token, location) => {
 export const signup = (email,password,firstName,lastName,uid) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.5.1:3001/api/account/signup';
+            const url = `http://${IP_ADDRESS}/api/account/signup`;
             const request = await fetch(url, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
@@ -149,7 +148,7 @@ export const signup = (email,password,firstName,lastName,uid) => {
 export const login = (email,password) => {
     return async dispatch => {
         try {
-            const url = 'http://10.100.5.1:3001/api/account/login';
+            const url = `http://${IP_ADDRESS}/api/account/login`;
             const request = await fetch(url, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
