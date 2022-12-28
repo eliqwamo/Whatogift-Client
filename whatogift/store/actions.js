@@ -17,7 +17,7 @@ export const loginDispatch = (data) => {
 
 // ip address to replace.
 const PORT = 3001;
-const IP_ADDRESS = `10.100.5.1:${PORT}`;
+const IP_ADDRESS = `10.100.8.1:${PORT}`;
 
 export const find_gift = (
     token, location, eventTags,
@@ -146,6 +146,7 @@ export const signup = (email,password,firstName,lastName,uid) => {
 
 
 export const login = (email,password) => {
+    console.log('loggggin');
     return async dispatch => {
         try {
             const url = `http://${IP_ADDRESS}/api/account/login`;

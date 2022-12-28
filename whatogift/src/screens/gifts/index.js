@@ -22,17 +22,14 @@ const relationsArr = [
     "Fifth Circle: Hello Hello",
     "Stranger"
 ];
-
 const events = [
     { name: '#Wedding' },
     { name: '#Birthday' },
     { name: "#Party" },
 ];
-
 const genderRbData = [
     { label: 'Male' }, { label: 'Female' }, { label: 'Other' }
 ];
-
 const interetsData = [
     "Video Games",
     "Nature",
@@ -56,6 +53,7 @@ const Gift = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
 
+    console.log('token:' + token);
 
 
     useEffect(() => {
@@ -273,7 +271,7 @@ const Gift = (props) => {
                 {
                     giftData ? (
                         <FlatList
-                            data={giftData.giftsList.message}
+                            data={giftData?.giftsList?.message}
                             keyExtractor={item => item._id}
                             renderItem={rowItem => <GiftItem gift={rowItem.item} />}
                         />
