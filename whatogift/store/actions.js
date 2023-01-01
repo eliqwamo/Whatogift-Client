@@ -17,7 +17,7 @@ export const loginDispatch = (data) => {
 
 // ip address to replace.
 const PORT = 3001;
-const IP_ADDRESS = `10.100.8.1:${PORT}`;
+const IP_ADDRESS = `10.100.6.1:${PORT}`;
 
 export const find_gift = (
     token, location, eventTags,

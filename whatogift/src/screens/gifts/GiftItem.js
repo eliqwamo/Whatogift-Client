@@ -7,7 +7,7 @@ const GiftItem = props => {
 
 
     return(
-        <View style={styles.row}>
+        <TouchableOpacity onPress={props.onclick} style={styles.row}>
             <View style={styles.product_row}>
                 <View style={styles.image_container}>
                     <View style={styles.brand}>
@@ -42,7 +42,7 @@ const GiftItem = props => {
                     <Text style={styles.view}>VIEW</Text>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

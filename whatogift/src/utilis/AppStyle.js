@@ -19,4 +19,16 @@ export default StyleSheet.create({
         color:Colors.white,
         fontSize:20
     },
+
+
+
+    container_nopadding:{
+        flex:1, backgroundColor:Colors.bg,
+    },
+    big_image_container:{
+        width:'100%', height:350,
+    },
+    big_image:{
+        width:'100%', height:350, resizeMode:'cover'
+    },
 })
