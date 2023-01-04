@@ -4,6 +4,9 @@ export const LOGOUT = 'LOGOUT';
 export const GET_OVERVIEW = 'GET_OVERVIEW';
 export const GET_GIFTS = 'GET_GIFTS';
 
+export const SAVE_PRODUCT_FAV = 'SAVE_PRODUCT_FAV';
+export const GET_MY_DATA = 'GET_MY_DATA';
+
 export const logout = () => {
     AsyncStorage.removeItem('Account');
     return { type:LOGOUT }
@@ -17,7 +20,43 @@ export const loginDispatch = (data) => {
 
 // ip address to replace.
 const PORT = 3001;
-const IP_ADDRESS = `10.100.6.1:${PORT}`;
+const IP_ADDRESS = `10.100.8.1:${PORT}`;
+
+
+export const saveProductToFav = (token,productId) => {
+
+
+    return async dispatch => {
+        try {
+            const url = `http://${IP_ADDRESS}/api/product/storeProductToFav`;
+            const request = await fetch(url, {
+                method: 'post',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    productId: productId
+                })
+            })
+            const data = await request.json();
+            if(data.status){
+                dispatch(saveProductToFav_dispatch(data));
+                dispatch(getMyData(token));
+            } else {
+                console.log('No data for you');
+            }
+        } catch (error) {
+            console.log('ERRRRRR: ' + JSON.stringify(error));
+        }
+    }
+}
+export const saveProductToFav_dispatch = (data) => {
+    return dispatch => {
+        dispatch({ type: SAVE_PRODUCT_FAV, data: data })
+    }
+}
+
 
 export const find_gift = (
     token, location, eventTags,
@@ -98,6 +137,45 @@ export const getOverview = (token, location) => {
         }
     }
 }
+
+
+
+
+
+
+export const getMyData = (token) => {
+    return async dispatch => {
+        try {
+            const url = `http://${IP_ADDRESS}}/api/account/get_overview`;
+            const request = await fetch(url, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            const data = await request.json();
+
+            if(data.status){
+                console.log('KHGDKJHGDKJH: ' + JSON.stringify(data.message));
+                dispatch(getMyDataDispatch(data.message))
+            } else {
+                let message = data.message;
+                throw new Error(message);
+            }
+        } catch (error) {
+            console.log('ERRRRRR: ' + JSON.stringify(error));
+        }
+    }
+}
+export const getMyDataDispatch = (data) => {
+    return dispatch => {
+        dispatch({ type: GET_MY_DATA, data: data })
+    }
+}
+
+
 
 
 

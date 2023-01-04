@@ -13,7 +13,8 @@ import firebase from './src/utilis/firebaseConfig';
 import reducers from './store/reducers';
 const rootReducer = combineReducers({
   appReducer: reducers,
-  giftsList: reducers
+  giftsList: reducers,
+  myData: reducers
 })
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
