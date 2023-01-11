@@ -158,7 +158,6 @@ export const getMyData = (token) => {
             const data = await request.json();
 
             if(data.status){
-                console.log('KHGDKJHGDKJH: ' + JSON.stringify(data.message));
                 dispatch(getMyDataDispatch(data.message))
             } else {
                 let message = data.message;
@@ -238,6 +237,7 @@ export const login = (email,password) => {
             })
             const data = await request.json();
             if(data.status){
+
                 AsyncStorage.setItem('Account', JSON.stringify({
                     token: data.token,
                     _id: data.message._id,
@@ -246,7 +246,10 @@ export const login = (email,password) => {
                     email: data.message.email,
                     avatar: data.message.avatar
                 }));
+
                 dispatch(loginDispatch(data.message))
+                dispatch(getMyData(data.token));
+
             } else {
                 let message = data.message;
                 throw new Error(message);

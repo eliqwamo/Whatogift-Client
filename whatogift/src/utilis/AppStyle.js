@@ -19,6 +19,20 @@ export default StyleSheet.create({
         color:Colors.white,
         fontSize:20
     },
+    username:{
+        fontSize:20, marginTop:7
+    },
+    email:{
+        fontSize:14, marginTop:0
+    },
+
+
+    avatar_container:{
+        width:'100%',
+        paddingVertical:30,
+        backgroundColor:Colors.white,
+        alignItems:'center'
+    },
 
 
 
